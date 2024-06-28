@@ -1,1 +1,5 @@
 #nullable enable
+LettuceEncrypt.ILettuceEncryptOptionsProvider
+LettuceEncrypt.ILettuceEncryptOptionsProvider.ChangeToken.get -> Microsoft.Extensions.Primitives.IChangeToken!
+LettuceEncrypt.ILettuceEncryptOptionsProvider.SetAddresses(string![]! addresses) -> void
+static Microsoft.Extensions.DependencyInjection.LettuceEncryptServiceCollectionExtensions.AddLettuceEncrypt(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<LettuceEncrypt.LettuceEncryptOptions!>! configure, Microsoft.Extensions.Configuration.IConfiguration? configuration) -> LettuceEncrypt.ILettuceEncryptServiceBuilder!
