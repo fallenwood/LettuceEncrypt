@@ -8,11 +8,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 
 /// <summary>
-///
+/// The LettuceEncrypt options provider.
+/// Should be added by user with <see cref="ConfigurationManagerExtensions.AddLettuceEncryptOptionsProvider(Microsoft.Extensions.Configuration.ConfigurationManager, ILettuceEncryptOptionsProvider)"/>
 /// </summary>
 public interface ILettuceEncryptOptionsProvider : IConfigurationProvider {
   /// <summary>
-  ///
+  /// Set the domain names.
+  /// Note: it will replace the existing domain names.
   /// </summary>
   /// <param name="addresses"></param>
   public void SetDomainNames(string[] addresses);
@@ -35,17 +37,5 @@ internal sealed class LettuceEncryptOptionsProvider : ConfigurationProvider, ILe
     }
 
     this.OnReload();
-  }
-
-  public override bool TryGet(string key, out string value) {
-    value = string.Empty;
-    if (base.TryGet(key, out var nullableValue)) {
-      if (nullableValue != null) {
-        value = nullableValue;
-        return true;
-      }
-    }
-
-    return false;
   }
 }

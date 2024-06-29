@@ -6,7 +6,6 @@ namespace LettuceEncrypt;
 using Microsoft.Extensions.Configuration;
 
 internal class LettuceEncryptOptionsConfigurationSource(ILettuceEncryptOptionsProvider provider) : IConfigurationSource {
-  ///<inheritdoc />
   public IConfigurationProvider Build(IConfigurationBuilder builder) {
     return provider;
   }

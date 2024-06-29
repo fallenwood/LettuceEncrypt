@@ -6,11 +6,11 @@ namespace LettuceEncrypt;
 using Microsoft.Extensions.Configuration;
 
 /// <summary>
-/// 
+/// Extension methods for <see cref="ConfigurationManager"/>.
 /// </summary>
 public static class ConfigurationManagerExtensions {
   /// <summary>
-  /// 
+  /// Add a <see cref="ILettuceEncryptOptionsProvider"/> to the configuration manager.
   /// </summary>
   /// <param name="manager"></param>
   /// <param name="provider"></param>
