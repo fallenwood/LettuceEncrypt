@@ -51,7 +51,7 @@ public static class LettuceEncryptServiceCollectionExtensions {
   /// </summary>
   /// <param name="services"></param>
   /// <param name="configure">A callback to configure options.</param>
-  /// <param name="configuration">The IConfiguration.</param>
+  /// <param name="configuration">If null, the configuraiton will not dynamic refect if changed.</param>
   /// <returns></returns>
   public static ILettuceEncryptServiceBuilder AddLettuceEncrypt(this IServiceCollection services,
       Action<LettuceEncryptOptions> configure,
@@ -84,8 +84,8 @@ public static class LettuceEncryptServiceCollectionExtensions {
 
     services.Configure(configure);
 
-    // TODO: is it needed for else block?
     if (configuration == null) {
+      // Original implementation, configuration will not dynamically reflect changes
       services.AddSingleton<IConfigureOptions<LettuceEncryptOptions>>(s => {
         var config = s.GetService<IConfiguration?>();
         return new ConfigureOptions<LettuceEncryptOptions>(options => config?.Bind(LettuceEncrypt, options));

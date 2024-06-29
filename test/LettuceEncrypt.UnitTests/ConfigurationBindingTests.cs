@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Xunit;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace LettuceEncrypt.Tests;
 
@@ -47,24 +46,36 @@ public class ConfigurationBindingTests {
   }
 
   [Fact]
-  public void CustomProviderOptionsWin() {
-
-    var config = new ConfigurationBuilder()
-        .Build();
-
+  public void OptionsShouldBeOrdered() {
+    var config = new ConfigurationManager();
     var provider = new LettuceEncryptOptionsProvider();
 
-    provider.SetAddresses(new[] { "one.com", "two.com" });
+    config.AddLettuceEncryptOptionsProvider(provider);
+
+    provider.SetDomainNames(["one.com", "two.com"]);
 
     var services = new ServiceCollection()
         .AddSingleton<ILettuceEncryptOptionsProvider>(provider)
-        .AddLettuceEncrypt(o => { })
+        .AddLettuceEncrypt(o => { }, config)
         .Services
         .BuildServiceProvider(true);
 
-    var options = services.GetRequiredService<IOptions<LettuceEncryptOptions>>();
+    var setups = services.GetRequiredService<IEnumerable<IConfigureOptions<LettuceEncryptOptions>>>().ToArray();
+    Assert.Equal(2, setups.Length);
 
-    Assert.Equal(2, options.Value.DomainNames.Length);
+    var options = new LettuceEncryptOptions();
+
+    setups[0].Configure(options);
+    Assert.Empty(options.DomainNames);
+
+    setups[1].Configure(options);
+    Assert.Equal(2, options.DomainNames.Length);
+
+    var optionsMonitor = services.GetRequiredService<IOptionsMonitor<LettuceEncryptOptions>>();
+    Assert.Equal(2, optionsMonitor.CurrentValue.DomainNames.Length);
+
+    provider.SetDomainNames(["one.com", "two.com", "three.com"]);
+    Assert.Equal(3, optionsMonitor.CurrentValue.DomainNames.Length);
   }
 
   [Theory]

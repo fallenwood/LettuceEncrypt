@@ -15,7 +15,7 @@ public interface ILettuceEncryptOptionsProvider : IConfigurationProvider {
   ///
   /// </summary>
   /// <param name="addresses"></param>
-  public void SetAddresses(string[] addresses);
+  public void SetDomainNames(string[] addresses);
 
   /// <inheritdoc />
   public IChangeToken ChangeToken { get; }
@@ -28,10 +28,10 @@ internal sealed class LettuceEncryptOptionsProvider : ConfigurationProvider, ILe
   public IChangeToken ChangeToken => new CancellationChangeToken(_configurationChangeTokenSource.Token);
 
   ///<inheritdoc />
-  public void SetAddresses(string[] addresses) {
+  public void SetDomainNames(string[] domainNames) {
     this.Data = new Dictionary<string, string?>();
-    for (var i = 0; i < addresses.Length; i++) {
-      this.Data[$"LettuceEncrypt:DomainNames:{i}"] = addresses[i];
+    for (var i = 0; i < domainNames.Length; i++) {
+      this.Data[$"LettuceEncrypt:DomainNames:{i}"] = domainNames[i];
     }
 
     this.OnReload();

@@ -5,8 +5,17 @@ namespace LettuceEncrypt;
 
 using Microsoft.Extensions.Configuration;
 
-internal static class ConfigurationManagerExtensions {
-  internal static ConfigurationManager AddLettuceEncryptOptionsProvider(
+/// <summary>
+/// 
+/// </summary>
+public static class ConfigurationManagerExtensions {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="manager"></param>
+  /// <param name="provider"></param>
+  /// <returns></returns>
+  public static ConfigurationManager AddLettuceEncryptOptionsProvider(
       this ConfigurationManager manager, ILettuceEncryptOptionsProvider provider) {
     IConfigurationBuilder configBuilder = manager;
     configBuilder.Add(new LettuceEncryptOptionsConfigurationSource(provider));
