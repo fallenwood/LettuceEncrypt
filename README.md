@@ -6,13 +6,13 @@ LettuceEncrypt for ASP.NET Core
 [![Build Status][ci-badge]][ci] [![Code Coverage][codecov-badge]][codecov]
 [![NuGet][nuget-badge] ![NuGet Downloads][nuget-download-badge]][nuget]
 
-[ci]: https://github.com/natemcmaster/LettuceEncrypt/actions?query=workflow%3ACI+branch%3Amain
-[ci-badge]: https://github.com/natemcmaster/LettuceEncrypt/workflows/CI/badge.svg
-[codecov]: https://codecov.io/gh/natemcmaster/LettuceEncrypt
-[codecov-badge]: https://codecov.io/gh/natemcmaster/LettuceEncrypt/branch/main/graph/badge.svg?token=l6uSsHZ8nA
-[nuget]: https://www.nuget.org/packages/LettuceEncrypt/
-[nuget-badge]: https://img.shields.io/nuget/v/LettuceEncrypt.svg?style=flat-square
-[nuget-download-badge]: https://img.shields.io/nuget/dt/LettuceEncrypt?style=flat-square
+[ci]: https://github.com/fallenwood/LettuceEncrypt/actions?query=workflow%3ACI+branch%3Amain
+[ci-badge]: https://github.com/fallenwood/LettuceEncrypt/workflows/CI/badge.svg
+[codecov]: https://codecov.io/gh/fallenwood/LettuceEncrypt
+[codecov-badge]: https://codecov.io/gh/fallenwood/LettuceEncrypt/branch/main/graph/badge.svg?token=l6uSsHZ8nA
+[nuget]: https://www.nuget.org/packages/fallenwood.LettuceEncrypt/
+[nuget-badge]: https://img.shields.io/nuget/v/fallenwood.LettuceEncrypt.svg?style=flat-square
+[nuget-download-badge]: https://img.shields.io/nuget/dt/fallenwood.LettuceEncrypt?style=flat-square
 [ACME]: https://en.wikipedia.org/wiki/Automated_Certificate_Management_Environment
 [Let's Encrypt]: https://letsencrypt.org/
 
@@ -24,15 +24,16 @@ It then configures Kestrel to use this certificate for all HTTPS traffic.
 See [usage instructions below](#usage) to get started.
 
 Created and developed by [@natemcmaster](https://github.com/natemcmaster) with ❤️ from Seattle ☕️.
+Forked by [@Fallenwood](https://github.com/fallenwood) at 2024 Jun.
 This project was formerly known as "McMaster.AspNetCore.LetsEncrypt", but [has been renamed for
-trademark reasons](https://github.com/natemcmaster/LettuceEncrypt/issues/99). This project is **not an official
+trademark reasons](https://github.com/fallenwood/LettuceEncrypt/issues/99). This project is **not an official
 offering** from Let's Encrypt® or ISRG™.
 
 This project is 100% organic and best served cold with ranch and carrots. 🥬
 
 ### Project status
 
-This project is in maintenance mode. I lost interest in developing features. I will make a patch if there is a security issue. I'll also consider an update if a new .NET major version breaks and the patch fix required is small. Please see https://github.com/natemcmaster/LettuceEncrypt/security/policy if you wish to report a security concern.
+This project is in maintenance mode. I lost interest in developing features. I will make a patch if there is a security issue. I'll also consider an update if a new .NET major version breaks and the patch fix required is small. Please see https://github.com/fallenwood/LettuceEncrypt/security/policy if you wish to report a security concern.
 
 ## Will this work for me?
 
@@ -148,7 +149,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ### Save generated certificates to Azure Key Vault
 
-Install [LettuceEncrypt.Azure](https://nuget.org/packages/LettuceEncrypt.Azure).
+Install [LettuceEncrypt.Azure](https://nuget.org/packages/fallenwood.LettuceEncrypt.Azure).
 This will save and load certificate files using an Azure Key Vault.
 It will also save your certificate authority account key as a secret in the same vault.
 

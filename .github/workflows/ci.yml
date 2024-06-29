@@ -40,7 +40,7 @@ jobs:
         with:
           dotnet-version: |
             6.0.x
-            7.0.x
+            8.0.x
       - name: Run build script
         id: build_script
         run: ./build.ps1 -ci
@@ -92,11 +92,11 @@ jobs:
             Packages have been posted to these feeds:
 
             #### NuGet.org
-            https://nuget.org/packages/LettuceEncrypt/${{ env.PACKAGE_VERSION }}
-            https://nuget.org/packages/LettuceEncrypt.Azure/${{ env.PACKAGE_VERSION }}
+            https://nuget.org/packages/fallenwood.LettuceEncrypt/${{ env.PACKAGE_VERSION }}
+            https://nuget.org/packages/fallenwood.LettuceEncrypt.Azure/${{ env.PACKAGE_VERSION }}
 
             #### GitHub Package Registry
-            https://github.com/natemcmaster?tab=packages&repo_name=LettuceEncrypt
+            https://github.com/fallenwood?tab=packages&repo_name=LettuceEncrypt
 
           draft: true
           prerelease: ${{ env.IS_STABLE_BUILD == 'false' }} # Example: v3.1.0-beta
