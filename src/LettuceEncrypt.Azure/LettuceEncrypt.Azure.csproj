@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Fallenwood.LettuceEncrypt.Azure</PackageId>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <Description>Provides API for configuring ASP.NET Core to automatically generate HTTPS certificates and store them in Azure Key Vault.</Description>
