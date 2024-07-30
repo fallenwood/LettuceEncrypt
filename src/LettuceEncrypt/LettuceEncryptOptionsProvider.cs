@@ -23,7 +23,10 @@ public interface ILettuceEncryptOptionsProvider : IConfigurationProvider {
   public IChangeToken ChangeToken { get; }
 }
 
-internal sealed class LettuceEncryptOptionsProvider : ConfigurationProvider, ILettuceEncryptOptionsProvider {
+/// <summary>
+/// The LettuceEncrypt options provider, supports set domain names dynamically.
+/// </summary>
+public sealed class LettuceEncryptOptionsProvider() : ConfigurationProvider, ILettuceEncryptOptionsProvider {
   private readonly CancellationTokenSource _configurationChangeTokenSource = new();
 
   ///<inheritdoc />

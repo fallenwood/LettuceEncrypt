@@ -3,6 +3,7 @@
     <PackageReleaseNotes Condition="$(VersionPrefix.StartsWith('1.4.'))">
 New features:
   * Add Dynamic Confing Provider for DomainNames.
+  * Add LettuceEncrypt.LettuceEncryptOptionsProvider to dynamicly configure LettuceEncryptOptions.
 
 Breaking Changes:
   * In-memory configuration provider has higher priority than explicit options.
