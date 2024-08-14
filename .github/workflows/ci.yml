@@ -94,7 +94,6 @@ jobs:
 
             #### NuGet.org
             https://nuget.org/packages/fallenwood.LettuceEncrypt/${{ env.PACKAGE_VERSION }}
-            https://nuget.org/packages/fallenwood.LettuceEncrypt.Azure/${{ env.PACKAGE_VERSION }}
 
             #### GitHub Package Registry
             https://github.com/fallenwood?tab=packages&repo_name=LettuceEncrypt
