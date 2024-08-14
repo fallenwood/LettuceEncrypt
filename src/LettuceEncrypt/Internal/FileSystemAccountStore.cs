@@ -1,15 +1,20 @@
 ﻿// Copyright (c) Nate McMaster.
+// Copyright (c) Fallenwood.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+namespace LettuceEncrypt.Internal;
 
 using System.Text.Json;
 using LettuceEncrypt.Accounts;
 using LettuceEncrypt.Acme;
 using Microsoft.Extensions.Logging;
 
-namespace LettuceEncrypt.Internal;
 
-internal class FileSystemAccountStore : IAccountStore
-{
+internal class FileSystemAccountStore : IAccountStore {
+    private static JsonSerializerOptions JsonSerializerOptions = new {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+
     private readonly DirectoryInfo _accountDir;
     private readonly ILogger _logger;
 
@@ -56,12 +61,11 @@ internal class FileSystemAccountStore : IAccountStore
     private static async Task<AccountModel?> Deserialize(FileInfo jsonFile, CancellationToken cancellationToken)
     {
         using var fileStream = jsonFile.OpenRead();
-        var deserializeOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        };
 
-        return await JsonSerializer.DeserializeAsync<AccountModel>(fileStream, deserializeOptions,
+        return await JsonSerializer.DeserializeAsync<AccountModel>(
+            fileStream,
+            LettuceEncryptJsonContext.Default.AccountModel,
+            JsonSerializerOptions,
             cancellationToken);
     }
 
@@ -73,11 +77,12 @@ internal class FileSystemAccountStore : IAccountStore
         _logger.LogTrace("Saving account information to {path}", jsonFile.FullName);
 
         using var writeStream = jsonFile.OpenWrite();
-        var serializerOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        };
-        await JsonSerializer.SerializeAsync(writeStream, account, serializerOptions, cancellationToken);
+        await JsonSerializer.SerializeAsync(
+            writeStream,
+            account,
+            LettuceEncryptJsonContext.Default.AccountModel,
+            JsonSerializerOptions,
+            cancellationToken);
 
         _logger.LogDebug("Saved account information to {path}", jsonFile.FullName);
     }
