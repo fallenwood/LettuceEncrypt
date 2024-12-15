@@ -7,42 +7,35 @@ using Microsoft.Extensions.Options;
 
 namespace LettuceEncrypt.Internal.AcmeStates;
 
-internal class BeginCertificateCreationState : AcmeState
+internal class BeginCertificateCreationState(
+    AcmeStateMachineContext context,
+    ILogger<ServerStartupState> logger,
+    IOptionsMonitor<LettuceEncryptOptions> options,
+    AcmeCertificateFactory acmeCertificateFactory,
+    CertificateSelector selector,
+    IEnumerable<ICertificateRepository> certificateRepositories) : AcmeState(context)
 {
-    private readonly ILogger<ServerStartupState> _logger;
-    private readonly IOptions<LettuceEncryptOptions> _options;
-    private readonly AcmeCertificateFactory _acmeCertificateFactory;
-    private readonly CertificateSelector _selector;
-    private readonly IEnumerable<ICertificateRepository> _certificateRepositories;
-
-    public BeginCertificateCreationState(
-        AcmeStateMachineContext context, ILogger<ServerStartupState> logger,
-        IOptions<LettuceEncryptOptions> options, AcmeCertificateFactory acmeCertificateFactory,
-        CertificateSelector selector, IEnumerable<ICertificateRepository> certificateRepositories)
-        : base(context)
+  public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
     {
-        _logger = logger;
-        _options = options;
-        _acmeCertificateFactory = acmeCertificateFactory;
-        _selector = selector;
-        _certificateRepositories = certificateRepositories;
-    }
-
-    public override async Task<IAcmeState> MoveNextAsync(CancellationToken cancellationToken)
-    {
-        var domainNames = _options.Value.DomainNames;
+        var domainNames = options.CurrentValue.DomainNames;
 
         try
         {
-            var account = await _acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken);
-            _logger.LogInformation("Using account {accountId}", account.Id);
+            var account = await acmeCertificateFactory.GetOrCreateAccountAsync(cancellationToken);
+            logger.LogInformation("Using account {accountId}", account.Id);
 
-            _logger.LogInformation("Creating certificate for {hostname}",
+            logger.LogInformation("Creating certificate for {hostname}",
                 string.Join(",", domainNames));
 
-            var cert = await _acmeCertificateFactory.CreateCertificateAsync(cancellationToken);
+            if (domainNames.Length == 0)
+            {
+                logger.LogInformation("No domain names are configured. Skipping certificate creation.");
+                return MoveTo<CheckForRenewalState>();
+            }
 
-            _logger.LogInformation("Created certificate {subjectName} ({thumbprint})",
+            var cert = await acmeCertificateFactory.CreateCertificateAsync(cancellationToken);
+
+            logger.LogInformation("Created certificate {subjectName} ({thumbprint})",
                 cert.Subject,
                 cert.Thumbprint);
 
@@ -50,7 +43,7 @@ internal class BeginCertificateCreationState : AcmeState
         }
         catch (Exception ex)
         {
-            _logger.LogError(0, ex, "Failed to automatically create a certificate for {hostname}", domainNames);
+            logger.LogError(0, ex, "Failed to automatically create a certificate for {hostname}", domainNames);
             throw;
         }
 
@@ -59,7 +52,7 @@ internal class BeginCertificateCreationState : AcmeState
 
     private async Task SaveCertificateAsync(X509Certificate2 cert, CancellationToken cancellationToken)
     {
-        _selector.Add(cert);
+        selector.Add(cert);
 
         var saveTasks = new List<Task>
         {
@@ -67,7 +60,7 @@ internal class BeginCertificateCreationState : AcmeState
         };
 
         var errors = new List<Exception>();
-        foreach (var repo in _certificateRepositories)
+        foreach (var repo in certificateRepositories)
         {
             try
             {

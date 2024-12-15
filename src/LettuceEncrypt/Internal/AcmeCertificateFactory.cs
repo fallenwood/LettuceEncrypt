@@ -1,4 +1,4 @@
-﻿// Copyright (c) Nate McMaster.
+// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Security.Cryptography.X509Certificates;
@@ -19,7 +19,7 @@ internal class AcmeCertificateFactory
 {
     private readonly AcmeClientFactory _acmeClientFactory;
     private readonly TermsOfServiceChecker _tosChecker;
-    private readonly IOptions<LettuceEncryptOptions> _options;
+    private readonly IOptionsMonitor<LettuceEncryptOptions> _options;
     private readonly IHttpChallengeResponseStore _challengeStore;
     private readonly IAccountStore _accountRepository;
     private readonly ILogger _logger;
@@ -35,7 +35,7 @@ internal class AcmeCertificateFactory
     public AcmeCertificateFactory(
         AcmeClientFactory acmeClientFactory,
         TermsOfServiceChecker tosChecker,
-        IOptions<LettuceEncryptOptions> options,
+        IOptionsMonitor<LettuceEncryptOptions> options,
         IHttpChallengeResponseStore challengeStore,
         ILogger<AcmeCertificateFactory> logger,
         IHostApplicationLifetime appLifetime,
@@ -95,7 +95,7 @@ internal class AcmeCertificateFactory
 
         _tosChecker.EnsureTermsAreAccepted(tosUri);
 
-        var options = _options.Value;
+        var options = _options.CurrentValue;
         _logger.LogInformation("Creating new account for {email}", options.EmailAddress);
         var accountId = await _client.CreateAccountAsync(options.EmailAddress);
 
@@ -165,7 +165,7 @@ internal class AcmeCertificateFactory
         var orders = await _client.GetOrdersAsync();
         if (orders.Any())
         {
-            var expectedDomains = new HashSet<string>(_options.Value.DomainNames);
+            var expectedDomains = new HashSet<string>(_options.CurrentValue.DomainNames);
             foreach (var order in orders)
             {
                 var orderDetails = await _client.GetOrderDetailsAsync(order);
@@ -191,7 +191,7 @@ internal class AcmeCertificateFactory
         if (orderContext == null)
         {
             _logger.LogDebug("Creating new order for a certificate");
-            orderContext = await _client.CreateOrderAsync(_options.Value.DomainNames);
+            orderContext = await _client.CreateOrderAsync(_options.CurrentValue.DomainNames);
         }
 
         cancellationToken.ThrowIfCancellationRequested();
@@ -243,13 +243,13 @@ internal class AcmeCertificateFactory
                 _tlsAlpnChallengeResponder, _appLifetime, _client, _logger, domainName));
         }
 
-        if (_options.Value.AllowedChallengeTypes.HasFlag(ChallengeType.Http01))
+        if (_options.CurrentValue.AllowedChallengeTypes.HasFlag(ChallengeType.Http01))
         {
             validators.Add(new Http01DomainValidator(
                 _challengeStore, _appLifetime, _client, _logger, domainName));
         }
 
-        if (_options.Value.AllowedChallengeTypes.HasFlag(ChallengeType.Dns01))
+        if (_options.CurrentValue.AllowedChallengeTypes.HasFlag(ChallengeType.Dns01))
         {
             validators.Add(new Dns01DomainValidator(
                 _dnsChallengeProvider, _appLifetime, _client, _logger, domainName));
@@ -291,21 +291,21 @@ internal class AcmeCertificateFactory
             throw new InvalidOperationException();
         }
 
-        var commonName = _options.Value.DomainNames[0];
+        var commonName = _options.CurrentValue.DomainNames[0];
         _logger.LogDebug("Creating cert for {commonName}", commonName);
 
         var csrInfo = new CsrInfo
         {
             CommonName = commonName,
         };
-        var privateKeyAlgorithm = (Certes.KeyAlgorithm)_options.Value.KeyAlgorithm;
-        var privateKey = KeyFactory.NewKey(privateKeyAlgorithm, _options.Value.KeySize);
+        var privateKeyAlgorithm = (Certes.KeyAlgorithm)_options.CurrentValue.KeyAlgorithm;
+        var privateKey = KeyFactory.NewKey(privateKeyAlgorithm, _options.CurrentValue.KeySize);
         var acmeCert = await _client.GetCertificateAsync(csrInfo, privateKey, order);
 
         _logger.LogAcmeAction("NewCertificate");
 
         var pfxBuilder = CreatePfxBuilder(acmeCert, privateKey);
-        var pfx = pfxBuilder.Build("HTTPS Cert - " + _options.Value.DomainNames, string.Empty);
+        var pfx = pfxBuilder.Build("HTTPS Cert - " + _options.CurrentValue.DomainNames, string.Empty);
         return new X509Certificate2(pfx, string.Empty, X509KeyStorageFlags.Exportable);
     }
 
@@ -315,9 +315,9 @@ internal class AcmeCertificateFactory
 
         _logger.LogDebug(
             "Adding {IssuerCount} additional issuers to certes before building pfx certificate file",
-            _options.Value.AdditionalIssuers.Length + _certificateAuthority.IssuerCertificates.Length);
+            _options.CurrentValue.AdditionalIssuers.Length + _certificateAuthority.IssuerCertificates.Length);
 
-        foreach (var issuer in _options.Value.AdditionalIssuers.Concat(_certificateAuthority.IssuerCertificates))
+        foreach (var issuer in _options.CurrentValue.AdditionalIssuers.Concat(_certificateAuthority.IssuerCertificates))
         {
             pfxBuilder.AddIssuer(Encoding.UTF8.GetBytes(issuer));
         }
