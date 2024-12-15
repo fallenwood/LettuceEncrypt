@@ -3,7 +3,7 @@
     <PackageTags>lets-encrypt;aspnetcore;https;certificates</PackageTags>
     <Authors>Fallenwood</Authors>
     <Copyright>Copyright © Fallenwood</Copyright>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
