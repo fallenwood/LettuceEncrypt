@@ -1,4 +1,4 @@
-﻿// Copyright (c) Nate McMaster.
+// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Security.Cryptography.X509Certificates;
@@ -21,14 +21,21 @@ internal class FileSystemCertificateRepository : ICertificateRepository, ICertif
 
     public Task<IEnumerable<X509Certificate2>> GetCertificatesAsync(CancellationToken cancellationToken)
     {
-        var certs = new List<X509Certificate2>();
-        foreach (var file in _certDir.GetFiles("*.pfx"))
+        var files = _certDir.GetFiles("*.pfx");
+        var certs = new List<X509Certificate2>(files.Length);
+        foreach (var file in files)
         {
-            var cert = new X509Certificate2(
+#if NET9_0_OR_GREATER
+      var cert = X509CertificateLoader.LoadPkcs12FromFile(
+                path: file.FullName,
+                password: PfxPassword);
+#else
+      var cert = new X509Certificate2(
                 fileName: file.FullName,
                 password: PfxPassword);
-            certs.Add(cert);
-        }
+#endif
+      certs.Add(cert);
+    }
 
         return Task.FromResult(certs.AsEnumerable());
     }
