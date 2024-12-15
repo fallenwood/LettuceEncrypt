@@ -10,12 +10,12 @@ namespace LettuceEncrypt.Internal;
 internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisposable
 {
     private readonly X509Store _store;
-    private readonly IOptions<LettuceEncryptOptions> _options;
+    private readonly IOptionsMonitor<LettuceEncryptOptions> _options;
     private readonly ILogger<X509CertStore> _logger;
 
     public bool AllowInvalidCerts { get; set; }
 
-    public X509CertStore(IOptions<LettuceEncryptOptions> options, ILogger<X509CertStore> logger)
+    public X509CertStore(IOptionsMonitor<LettuceEncryptOptions> options, ILogger<X509CertStore> logger)
     {
         _store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
         _store.Open(OpenFlags.ReadWrite);
@@ -25,7 +25,7 @@ internal class X509CertStore : ICertificateSource, ICertificateRepository, IDisp
 
     public Task<IEnumerable<X509Certificate2>> GetCertificatesAsync(CancellationToken cancellationToken)
     {
-        var domainNames = new HashSet<string>(_options.Value.DomainNames);
+        var domainNames = new HashSet<string>(_options.CurrentValue.DomainNames);
         var result = new List<X509Certificate2>();
         var certs = _store.Certificates.Find(X509FindType.FindByTimeValid,
             DateTime.Now,
