@@ -11,6 +11,7 @@ This library includes API for dynamically selecting which HTTPS certificate to u
     <VersionPrefix>1.0.0</VersionPrefix>
     <PackageVersion>$(VersionPrefix)</PackageVersion>
     <PackageVersion Condition="'$(IncludePreReleaseLabelInPackageVersion)' == 'true'">$(PackageVersion)-$(VersionSuffix)</PackageVersion>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
