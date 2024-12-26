@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\LettuceEncrypt\LettuceEncrypt.csproj" />
+    <ProjectReference Include="..\..\thirdparty\certes\src\Certes\Certes.csproj" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

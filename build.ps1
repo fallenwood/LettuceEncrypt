@@ -47,7 +47,8 @@ if ($ci) {
 
 # exec dotnet format -v detailed @formatArgs
 exec dotnet build --configuration $Configuration '-warnaserror:CS1591' @MSBuildArgs
-exec dotnet pack --no-restore --no-build --configuration $Configuration -o $artifacts @MSBuildArgs
+# remove --no-build to workarouond failures
+exec dotnet pack --no-restore --configuration $Configuration -o $artifacts @MSBuildArgs
 
 [string[]] $testArgs=@()
 if ($env:TF_BUILD) {
