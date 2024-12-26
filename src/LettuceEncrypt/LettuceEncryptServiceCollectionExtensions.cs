@@ -4,6 +4,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Security.Cryptography.X509Certificates;
 using LettuceEncrypt;
 using LettuceEncrypt.Acme;
 using LettuceEncrypt.Internal;
@@ -88,7 +89,7 @@ public static class LettuceEncryptServiceCollectionExtensions {
       // Original implementation, configuration will not dynamically reflect changes
       services.AddSingleton<IConfigureOptions<LettuceEncryptOptions>>(s => {
         var config = s.GetService<IConfiguration?>();
-        return new ConfigureOptions<LettuceEncryptOptions>(options => config?.Bind(LettuceEncrypt, options));
+        return new ConfigureOptions<LettuceEncryptOptions>(options => config!.Bind(LettuceEncrypt, options));
       });
     } else {
       services.Configure<LettuceEncryptOptions>(configuration!.GetSection(LettuceEncrypt));

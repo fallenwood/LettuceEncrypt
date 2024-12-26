@@ -1,4 +1,4 @@
-﻿// Copyright (c) Nate McMaster.
+// Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Text.Json;
@@ -61,7 +61,7 @@ internal class FileSystemAccountStore : IAccountStore
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        return await JsonSerializer.DeserializeAsync<AccountModel>(fileStream, deserializeOptions,
+        return await JsonSerializer.DeserializeAsync<AccountModel>(fileStream, LettuceEncryptJsonContext.Default.AccountModel,
             cancellationToken);
     }
 
@@ -77,7 +77,7 @@ internal class FileSystemAccountStore : IAccountStore
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
-        await JsonSerializer.SerializeAsync(writeStream, account, serializerOptions, cancellationToken);
+        await JsonSerializer.SerializeAsync(writeStream, account, LettuceEncryptJsonContext.Default.AccountModel, cancellationToken);
 
         _logger.LogDebug("Saved account information to {path}", jsonFile.FullName);
     }

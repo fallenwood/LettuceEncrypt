@@ -1,6 +1,8 @@
 // Copyright (c) Nate McMaster.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+namespace LettuceEncrypt.UnitTests;
+
 using System.Collections.Immutable;
 using System.Text;
 using Certes;
@@ -14,7 +16,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace LettuceEncrypt.UnitTests;
 
 public sealed class AcmeCertificateFactoryTest {
   private static readonly byte[] TestBytes1 = { 0x01, 0x01, 0x01, 0x01, 0x01 };
