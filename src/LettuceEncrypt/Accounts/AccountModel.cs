@@ -16,18 +16,21 @@ public class AccountModel
     /// <summary>
     /// A unique identifier.
     /// </summary>
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
     /// <summary>
     /// A list of email addresses associated with the account.
     /// At least one should be specified.
     /// </summary>
+    [JsonPropertyName("emailAddresses")]
     public string[] EmailAddresses { get; set; } = Array.Empty<string>();
 
     /// <summary>
     /// The private key for the account.
     /// This should be DER encoded key content.
     /// </summary>
+    [JsonPropertyName("privateKey")]
     public byte[] PrivateKey
     {
         get => _privateKey;
@@ -38,5 +41,6 @@ public class AccountModel
         }
     }
 
-    [JsonIgnore] internal IKey? Key { get; private set; }
+    [JsonIgnore]
+    internal IKey? Key { get; private set; }
 }
